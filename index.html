@@ -3,172 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith Realty - Discover Your Dream Residence</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>VEX - Shaping Tomorrow</title>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Liquid Glass Effect */
+        .liquid-glass {
+            background: rgba(0, 0, 0, 0.4);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 1.5rem 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .navbar {
+                padding: 1.5rem 4rem;
+            }
+        }
+
+        .navbar-bar {
+            background: rgba(0, 0, 0, 0.4);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .navbar-bar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            position: relative;
+            z-index: 11;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+            position: relative;
+            z-index: 11;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d1d5db;
+        }
+
+        .nav-cta {
+            position: relative;
+            z-index: 11;
+        }
+
+        .chat-button {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-button:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Hero Bottom Content */
+        .hero-bottom {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero-bottom {
+                padding: 3rem 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-bottom {
+                padding: 3rem 4rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: flex-end;
+                gap: 3rem;
+            }
+        }
+
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-heading {
+            font-size: 2rem;
+            line-height: 1.2;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            letter-spacing: -0.04em;
+        }
+
+        @media (min-width: 768px) {
+            .hero-heading {
+                font-size: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-heading {
+                font-size: 3.75rem;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .hero-heading {
+                font-size: 4.5rem;
+            }
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateX(-18px);
+            transition: opacity 500ms ease-out, transform 500ms ease-out;
+        }
+
+        .char.animated {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .subheading {
+            font-size: 1rem;
+            color: #d1d5db;
+            margin-bottom: 1.25rem;
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            line-height: 1.5;
+        }
+
+        @media (min-width: 768px) {
+            .subheading {
+                font-size: 1.125rem;
+            }
+        }
+
+        .subheading.fade-in {
+            opacity: 1;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            margin-bottom: 1rem;
+        }
+
+        .button-row.fade-in {
+            opacity: 1;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.4);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            position: relative;
+        }
+
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .hero-tag {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-tag {
+                justify-content: flex-end;
+            }
+        }
+
+        .hero-tag.fade-in {
+            opacity: 1;
+        }
+
+        .tag-card {
+            background: rgba(0, 0, 0, 0.4);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tag-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .tag-text {
+            font-size: 1.125rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .tag-text {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .tag-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-text">ZENITH</span>
-                <span class="logo-subtext">REALTY</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#properties">Properties</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#blog">Blog</a></li>
-            </ul>
-            <div class="nav-cta">
-                <a href="#" class="nav-phone">Find a property</a>
-            </div>
-        </div>
-    </nav>
+    <div class="hero-section">
+        <!-- Video Background -->
+        <video 
+            class="video-background" 
+            autoplay 
+            loop 
+            muted 
+            playsinline
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4">
+        </video>
 
-    <!-- Hero Section -->
-    <section class="hero">
+        <!-- Hero Content -->
         <div class="hero-content">
-            <h1 class="hero-title">Discover space you<br>truly belong in</h1>
-            <button class="cta-button">BOOK A CALL</button>
-        </div>
-        <div class="hero-image-container">
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" alt="Luxury modern villa">
-            </div>
-        </div>
-    </section>
-
-    <!-- Properties Section -->
-    <section class="properties" id="properties">
-        <div class="section-header">
-            <h2 class="section-title">Guiding you toward the residence of your dreams</h2>
-            <p class="section-subtitle">Our curated collection of exceptional properties designed for the discerning buyer</p>
-        </div>
-
-        <div class="properties-grid">
-            <!-- Property Card 1 -->
-            <div class="property-card">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop" alt="Amber Heights">
-                </div>
-                <div class="property-details">
-                    <h3 class="property-name">Amber Heights</h3>
-                    <p class="property-price">$3,450,000</p>
-                    <div class="property-specs">
-                        <div class="spec">
-                            <span class="spec-icon">📐</span>
-                            <span class="spec-text">5,400 sq ft</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🛏️</span>
-                            <span class="spec-text">5 Beds</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🚿</span>
-                            <span class="spec-text">4 Baths</span>
-                        </div>
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-bar">
+                    <div class="logo">VEX</div>
+                    <ul class="nav-links">
+                        <li><a href="#story">Story</a></li>
+                        <li><a href="#investing">Investing</a></li>
+                        <li><a href="#building">Building</a></li>
+                        <li><a href="#advisory">Advisory</a></li>
+                    </ul>
+                    <div class="nav-cta">
+                        <button class="chat-button">Start a Chat</button>
                     </div>
                 </div>
-            </div>
+            </nav>
 
-            <!-- Property Card 2 -->
-            <div class="property-card">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop" alt="Acorn Sanctuary">
-                </div>
-                <div class="property-details">
-                    <h3 class="property-name">Acorn Sanctuary</h3>
-                    <p class="property-price">$2,250,000</p>
-                    <div class="property-specs">
-                        <div class="spec">
-                            <span class="spec-icon">📐</span>
-                            <span class="spec-text">4,200 sq ft</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🛏️</span>
-                            <span class="spec-text">4 Beds</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🚿</span>
-                            <span class="spec-text">3 Baths</span>
-                        </div>
+            <!-- Bottom Content -->
+            <div class="hero-bottom">
+                <!-- Left Column -->
+                <div class="hero-left">
+                    <!-- Animated Heading -->
+                    <h1 class="hero-heading" id="heading">
+                        <!-- Will be populated by JavaScript -->
+                    </h1>
+
+                    <!-- Subheading -->
+                    <p class="subheading" id="subheading">
+                        We back visionaries and craft ventures that define what comes next.
+                    </p>
+
+                    <!-- Buttons -->
+                    <div class="button-row" id="buttons">
+                        <button class="btn btn-primary">Start a Chat</button>
+                        <button class="btn btn-secondary">Explore Now</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Property Card 3 -->
-            <div class="property-card">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=400&fit=crop" alt="Summit Pavilion">
-                </div>
-                <div class="property-details">
-                    <h3 class="property-name">Summit Pavilion</h3>
-                    <p class="property-price">$3,950,000</p>
-                    <div class="property-specs">
-                        <div class="spec">
-                            <span class="spec-icon">📐</span>
-                            <span class="spec-text">6,100 sq ft</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🛏️</span>
-                            <span class="spec-text">6 Beds</span>
-                        </div>
-                        <div class="spec">
-                            <span class="spec-icon">🚿</span>
-                            <span class="spec-text">5 Baths</span>
-                        </div>
+                <!-- Right Column - Tag -->
+                <div class="hero-tag" id="tag">
+                    <div class="tag-card">
+                        <div class="tag-text">Investing. Building. Advisory.</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="view-more">
-            <a href="#" class="view-more-link">View all properties</a>
-        </div>
-    </section>
+    <script>
+        const charDelay = 30; // ms
+        const initialDelay = 200; // ms
+        const charTransitionDuration = 500; // ms
+        const subheadingDelay = 800; // ms
+        const buttonsDelay = 1200; // ms
+        const tagDelay = 1400; // ms
+        const fadeInDuration = 1000; // ms
 
-    <!-- Exclusive Collection Section -->
-    <section class="exclusive-collection">
-        <div class="exclusive-content">
-            <div class="exclusive-text">
-                <h2 class="exclusive-title">Exclusive collection</h2>
-                <p class="exclusive-description">
-                    Introducing our curated selection of residential spaces, featuring bespoke architecture and contemporary design. Each property in our portfolio represents the pinnacle of luxury living, crafted for those who refuse to compromise on elegance, space, and sophistication.
-                </p>
-                <a href="#" class="exclusive-link">Explore collection →</a>
-            </div>
-            <div class="exclusive-image">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=900&fit=crop" alt="Exclusive architectural design">
-            </div>
-        </div>
-    </section>
+        function renderAnimatedHeading() {
+            const headingText = "Shaping\u00A0tomorrow\nwith\u00A0vision\u00A0and\u00A0action.";
+            const headingEl = document.getElementById('heading');
+            
+            const lines = headingText.split('\n');
+            
+            lines.forEach((line, lineIndex) => {
+                const lineSpan = document.createElement('div');
+                const chars = line.split('');
+                
+                chars.forEach((char, charIndex) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = char;
+                    charSpan.style.transitionDelay = `${initialDelay + (lineIndex * line.length * charDelay) + (charIndex * charDelay)}ms`;
+                    lineSpan.appendChild(charSpan);
+                });
+                
+                headingEl.appendChild(lineSpan);
+            });
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4 class="footer-title">ZENITH REALTY</h4>
-                <p class="footer-text">Discover space you truly belong in.</p>
-            </div>
-            <div class="footer-section">
-                <h4 class="footer-subtitle">Quick Links</h4>
-                <ul class="footer-links">
-                    <li><a href="#">Properties</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4 class="footer-subtitle">Contact</h4>
-                <p class="footer-text">hello@zenithrealty.com</p>
-                <p class="footer-text">+1 (555) 123-4567</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Zenith Realty. All rights reserved.</p>
-        </div>
-    </footer>
+            // Trigger animation
+            setTimeout(() => {
+                document.querySelectorAll('.char').forEach(char => {
+                    char.classList.add('animated');
+                });
+            }, 10);
+        }
+
+        function fadeInElement(elementId, delay) {
+            setTimeout(() => {
+                const el = document.getElementById(elementId);
+                if (el) {
+                    el.classList.add('fade-in');
+                }
+            }, delay);
+        }
+
+        // Initialize animations
+        renderAnimatedHeading();
+        fadeInElement('subheading', subheadingDelay);
+        fadeInElement('buttons', buttonsDelay);
+        fadeInElement('tag', tagDelay);
+    </script>
 </body>
 </html>
