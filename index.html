@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand-Tracked Generative Flowers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 720px;
+            height: 1280px;
+            max-width: 90vw;
+            max-height: 160vw;
+            aspect-ratio: 720 / 1280;
+            background: #000;
+            box-shadow: 0 0 60px rgba(255, 100, 0, 0.3);
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        #video-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .hud {
+            position: absolute;
+            font-size: 12px;
+            color: #0f0;
+            text-shadow: 0 0 8px #0f0;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+        }
+
+        #debug-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #debug-overlay canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ui-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(10, 10, 20, 0.95);
+            border: 2px solid #ff6400;
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 220px;
+            max-width: 280px;
+            color: #fff;
+            font-size: 12px;
+            z-index: 101;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(255, 100, 0, 0.2);
+        }
+
+        .ui-panel.collapsed {
+            max-width: 120px;
+            max-height: auto;
+        }
+
+        .ui-panel.collapsed .controls {
+            display: none;
+        }
+
+        .ui-panel h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #ffa500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ui-panel h3:hover {
+            text-shadow: 0 0 10px #ffa500;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .control-group label {
+            font-size: 11px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            background: #ff6400;
+            cursor: pointer;
+        }
+
+        .control-group .value {
+            font-size: 10px;
+            color: #0f0;
+            text-shadow: 0 0 4px #0f0;
+        }
+
+        .status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(10, 10, 20, 0.9);
+            border: 1px solid #0f0;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 11px;
+            color: #0f0;
+            text-shadow: 0 0 6px #0f0;
+            max-width: 200px;
+            z-index: 102;
+            line-height: 1.4;
+        }
+
+        .status.error {
+            border-color: #f00;
+            color: #f00;
+            text-shadow: 0 0 6px #f00;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 100, 0, 0.2);
+            border: 1px solid #ff6400;
+            color: #ff6400;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            z-index: 101;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 100, 0, 0.4);
+            text-shadow: 0 0 10px #ff6400;
+        }
+
+        .toggle-btn.active {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #0f0;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .status.loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <video id="video-feed"></video>
+        <canvas id="debug-overlay"></canvas>
+        <div id="ui-overlay"></div>
+    </div>
+
+    <div class="status" id="status">
+        <span>🌸 Requesting camera...</span>
+    </div>
+
+    <button class="toggle-btn" id="debug-toggle" title="Toggle debug overlay (D)">DEBUG OFF</button>
+
+    <div class="ui-panel" id="settings-panel">
+        <h3>
+            ⚙ Settings
+            <span id="collapse-toggle" style="cursor: pointer; font-weight: bold;">−</span>
+        </h3>
+        <div class="controls">
+            <div class="control-group">
+                <label>Pinch Sensitivity</label>
+                <input type="range" id="pinch-sensitivity" min="0.5" max="2" step="0.1" value="1">
+                <span class="value" id="pinch-sensitivity-value">1.00</span>
+            </div>
+            <div class="control-group">
+                <label>Bloom Speed</label>
+                <input type="range" id="bloom-speed" min="0.1" max="1" step="0.05" value="0.3">
+                <span class="value" id="bloom-speed-value">0.30</span>
+            </div>
+            <div class="control-group">
+                <label>Stem Length</label>
+                <input type="range" id="stem-length" min="40" max="200" step="10" value="100">
+                <span class="value" id="stem-length-value">100</span>
+            </div>
+            <div class="control-group">
+                <label>Glow Strength</label>
+                <input type="range" id="glow-strength" min="0.5" max="3" step="0.1" value="1.5">
+                <span class="value" id="glow-strength-value">1.50</span>
+            </div>
+            <div class="control-group">
+                <label>Petal Count</label>
+                <input type="range" id="petal-count" min="3" max="12" step="1" value="7">
+                <span class="value" id="petal-count-value">7</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"></script>
+    <!-- App modules -->
+    <script src="js/camera.js"></script>
+    <script src="js/handTracking.js"></script>
+    <script src="js/flower.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
