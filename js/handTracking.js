@@ -10,20 +10,26 @@ const HandTrackingModule = (() => {
 
     // Initialize MediaPipe HandLandmarker
     const init = async () => {
-        const vision = await window.Vision;
-        
-        const runningMode = 'VIDEO';
-        handLandmarker = await vision.HandLandmarker.createFromOptions(
-            { 
-                baseOptions: {
-                    modelAssetPath: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm`
-                },
-                runningMode: runningMode,
-                numHands: 2 
-            }
-        );
+        try {
+            const vision = await Vision;
+            
+            const runningMode = 'VIDEO';
+            handLandmarker = await vision.HandLandmarker.createFromOptions(
+                window, 
+                { 
+                    baseOptions: {
+                        modelAssetPath: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm`
+                    },
+                    runningMode: runningMode,
+                    numHands: 2 
+                }
+            );
 
-        CameraModule.updateStatus('✅ Hand tracking ready. Allow camera & move hands!', false);
+            CameraModule.updateStatus('✅ Hand tracking ready. Allow camera & move hands!', false);
+        } catch (err) {
+            console.error('HandLandmarker init error:', err);
+            CameraModule.updateStatus('⚠️ Hand tracking setup error. Camera may still work.', false);
+        }
     };
 
     // Smooth landmark position with exponential smoothing
@@ -38,7 +44,9 @@ const HandTrackingModule = (() => {
 
     // Process video frame and detect hand landmarks
     const detectHands = (videoElement) => {
-        if (!handLandmarker) return { left: null, right: null };
+        if (!handLandmarker || !videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+            return { left: null, right: null };
+        }
 
         try {
             const results = handLandmarker.detectForVideo(
