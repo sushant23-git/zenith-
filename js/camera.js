@@ -12,25 +12,43 @@ const CameraModule = (() => {
         videoElement = document.getElementById('video-feed');
 
         try {
-            stream = await navigator.mediaDevices.getUserMedia({
+            // Request camera access with proper constraints
+            const constraints = {
                 video: {
-                    width: { ideal: 720 },
-                    height: { ideal: 1280 },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
                     facingMode: 'user'
-                }
-            });
+                },
+                audio: false
+            };
 
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
             videoElement.srcObject = stream;
-            
+
             return new Promise((resolve) => {
-                videoElement.onloadedmetadata = () => {
-                    videoElement.play();
-                    updateStatus('🌸 Camera ready. Initializing hand tracking...', false);
-                    resolve();
-                };
+                const checkVideo = setInterval(() => {
+                    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                        clearInterval(checkVideo);
+                        canvasWidth = videoElement.videoWidth;
+                        canvasHeight = videoElement.videoHeight;
+                        updateStatus('✅ Camera ready. Initializing hand tracking...', false);
+                        resolve();
+                    }
+                }, 100);
+
+                setTimeout(() => {
+                    clearInterval(checkVideo);
+                    if (videoElement.readyState >= videoElement.HAVE_CURRENT_DATA) {
+                        canvasWidth = videoElement.videoWidth;
+                        canvasHeight = videoElement.videoHeight;
+                        updateStatus('✅ Camera ready. Initializing hand tracking...', false);
+                        resolve();
+                    }
+                }, 3000);
             });
         } catch (err) {
-            updateStatus(`❌ Camera access denied: ${err.message}`, true);
+            console.error('Camera error:', err);
+            updateStatus(`❌ Camera denied: ${err.name}. Check browser settings.`, true);
             throw err;
         }
     };
